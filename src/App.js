@@ -2,8 +2,9 @@ import "./App.css";
 import Ticker from "./components/Ticker";
 import PeriodAdjuster from "./components/PeriodAdjuster";
 import Counter from "./components/Counter";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useCallback } from "react";
 import { AppContext } from "./context/AppContext";
+
 const App = (props) => {
   const context = useContext(AppContext);
   const { state } = context;
@@ -19,26 +20,36 @@ const App = (props) => {
   console.log("STATE", state);
   console.log("ACTIVE", active);
 
-  const resetStopped = () => {
-    context.reset();
-  };
+  const { reset, toggleActive, countDown, adjustBreakMins, adjustSessionMins } =
+    context;
 
-  const doToggleActive = () => {
-    context.toggleActive();
-  };
+  const resetStopped = useCallback(() => {
+    reset();
+  }, [reset]);
+
+  const doToggleActive = useCallback(() => {
+    toggleActive();
+  }, [toggleActive]);
 
   let count = 0;
-  const onTickTock = () => {
+  const onTickTock = useCallback(() => {
+    countDown();
     console.log("onTickTock[" + count++ + "]");
-  };
+  }, [countDown, count]);
 
-  const onChangeBreakMins = (amt) => {
-    return context.adjustBreakMins(amt);
-  };
+  const onChangeBreakMins = useCallback(
+    (amt) => {
+      return adjustBreakMins(amt);
+    },
+    [adjustBreakMins]
+  );
 
-  const onChangeSessionMins = (amt) => {
-    return context.adjustSessionMins(amt);
-  };
+  const onChangeSessionMins = useCallback(
+    (amt) => {
+      return adjustSessionMins(amt);
+    },
+    [adjustSessionMins]
+  );
 
   useEffect(() => {
     console.log("active now [" + active + "]");
