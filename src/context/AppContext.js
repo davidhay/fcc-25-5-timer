@@ -17,9 +17,11 @@ export const AppContext = createContext();
 export function AppContextProvider(props) {
   const [appState, setAppState] = useState(initialState);
 
+  /*
   useEffect(() => {
     console.log("new state", { appState });
   }, appState);
+  */
 
   const wrapped = useMemo(() => {
     return {
@@ -40,7 +42,7 @@ export function AppContextProvider(props) {
           const orig = old.breakMins;
           const adjusted = orig + inc;
           const newVal = adjusted <= 0 ? orig : adjusted;
-          console.log("BREAK MINS", { old, newVal, inc });
+          //console.log("BREAK MINS", { old, newVal, inc });
           return {
             ...old,
             breakMins: newVal,
@@ -50,7 +52,7 @@ export function AppContextProvider(props) {
         });
       },
       countDown: () => {
-        console.log("countDown being called!" + new Date());
+        //console.log("countDown being called!" + new Date());
         setAppState((oldState) => {
           let newSeconds = oldState.periodSecs - 1;
           let newMinutes = oldState.periodMins;
@@ -61,19 +63,18 @@ export function AppContextProvider(props) {
           const flip = newMinutes === 0 && newSeconds === 0;
           let newPeriodIsSession = oldState.isPeriodSession;
           if (flip) {
-            if (appState.isPeriodSession) {
+            newSeconds = 0;
+            if (oldState.isPeriodSession) {
               //=> 'start of break'
               newMinutes = oldState.breakMins;
-              newSeconds = 0;
               newPeriodIsSession = false;
             } else {
               //=> 'start of session'
-              newMinutes = oldState.breakMins;
-              newSeconds = 0;
+              newMinutes = oldState.sessionMins;
               newPeriodIsSession = true;
             }
           } //end if flip
-          console.log("XXXX", { newPeriodIsSession, newMinutes, newSeconds });
+          //console.log("XXXX", { newPeriodIsSession, newMinutes, newSeconds });
 
           const updatedState = {
             ...oldState,
@@ -90,7 +91,7 @@ export function AppContextProvider(props) {
           const orig = old.sessionMins;
           const adjusted = orig + inc;
           const newVal = adjusted <= 0 ? orig : adjusted;
-          console.log("SESSION MINS", { old, newVal, inc });
+          //console.log("SESSION MINS", { old, newVal, inc });
           return {
             ...old,
             sessionMins: newVal,

@@ -16,12 +16,17 @@ const App = (props) => {
     periodMins,
     periodSecs,
   } = state;
-  console.log("CONTEXT", context);
-  console.log("STATE", state);
-  console.log("ACTIVE", active);
+
+  //  console.log("CONTEXT", context);
+  //  console.log("STATE", state);
+  //  console.log("ACTIVE", active);
 
   const { reset, toggleActive, countDown, adjustBreakMins, adjustSessionMins } =
     context;
+
+  useEffect(() => {
+    console.log({ isPeriodSession });
+  }, [isPeriodSession]);
 
   const resetStopped = useCallback(() => {
     reset();
@@ -34,7 +39,7 @@ const App = (props) => {
   let count = 0;
   const onTickTock = useCallback(() => {
     countDown();
-    console.log("onTickTock[" + count++ + "]");
+    //console.log("onTickTock[" + count++ + "]");
   }, [countDown, count]);
 
   const onChangeBreakMins = useCallback(
@@ -51,9 +56,11 @@ const App = (props) => {
     [adjustSessionMins]
   );
 
+  /*
   useEffect(() => {
     console.log("active now [" + active + "]");
   }, [active]);
+  */
 
   return (
     <div>

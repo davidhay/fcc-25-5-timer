@@ -35,7 +35,7 @@ const Ticker = ({ onTick }) => {
       } finally {
         scheduleTick();
       }
-    }, 1000);
+    }, 100);
   };
 
   useEffect(() => {
