@@ -15,6 +15,7 @@ const App = (props) => {
     isPeriodSession,
     periodMins,
     periodSecs,
+    flipped,
   } = state;
 
   //  console.log("CONTEXT", context);
@@ -30,6 +31,7 @@ const App = (props) => {
 
   const resetStopped = useCallback(() => {
     reset();
+    resetAudio();
   }, [reset]);
 
   const doToggleActive = useCallback(() => {
@@ -62,35 +64,70 @@ const App = (props) => {
   }, [active]);
   */
 
+  const resetAudio = () => {
+    const beep = document.getElementById("beep");
+    beep.pause();
+    beep.currentTime = 0;
+    console.log({ beep });
+  };
+
+  const playBeep = () => {
+    document.getElementById("beep").play();
+  };
+
+  useEffect(() => {
+    if (flipped) {
+      playBeep();
+    }
+  }, [flipped]);
+
   return (
     <div>
-      BEFORE
-      <div>
-        <Ticker onTick={onTickTock} />
-        <button onClick={doToggleActive}>
-          active : {active ? "ACTIVE" : "NOT-ACTIVE"}
-        </button>
-        <button onClick={resetStopped}>RESET STOPPED!</button>
+      <button onClick={playBeep}>BEEPP</button>
+      <audio id="beep" controls style={{ display: "none" }}>
+        <source
+          //src="./Tada-sound.mp3"
+          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+          type="audio/wav"
+        />
+        Your browser does not support the audio tag.
+      </audio>
+      <Ticker onTick={onTickTock} />
+      <button id="start_stop" onClick={doToggleActive}>
+        {active ? "Stop" : "Start"}
+      </button>
+      <button id="reset" onClick={resetStopped}>
+        Reset
+      </button>
+      {/*
         <div>Session Mins {sessionMins}</div>
         <div>Break Mins {breakMins}</div>
-        <PeriodAdjuster
-          value={sessionMins}
-          label={"Sessionn Minutes"}
-          onUp={onChangeSessionMins(1)}
-          onDown={onChangeSessionMins(-1)}
-        />
-        <PeriodAdjuster
-          value={breakMins}
-          label={"Break Minutes"}
-          onUp={onChangeBreakMins(1)}
-          onDown={onChangeBreakMins(-1)}
-        />
-        <Counter
-          label={isPeriodSession ? "Session" : "Break"}
-          mins={periodMins}
-          secs={periodSecs}
-        />
-      </div>
+        */}
+      <PeriodAdjuster
+        divId="session-label"
+        upId="session-increment"
+        downId="session-decrement"
+        value={sessionMins}
+        label={"Session Length"}
+        onUp={onChangeSessionMins(1)}
+        onDown={onChangeSessionMins(-1)}
+      />
+      <PeriodAdjuster
+        divId="break-label"
+        upId="break-increment"
+        downId="break-decrement"
+        value={breakMins}
+        label={"Break Length"}
+        onUp={onChangeBreakMins(1)}
+        onDown={onChangeBreakMins(-1)}
+      />
+      <Counter
+        counterId="timer-label"
+        timeLabel="timer-left"
+        label={isPeriodSession ? "Session" : "Break"}
+        mins={periodMins}
+        secs={periodSecs}
+      />
     </div>
   );
 };

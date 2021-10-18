@@ -1,21 +1,29 @@
 import { AppContext } from "../context/AppContext";
 import { useContext } from "react";
 
-const PeriodAdjuster = ({ value, onUp, onDown, label }) => {
+const PeriodAdjuster = ({
+  divId,
+  upId,
+  downId,
+  value,
+  onUp,
+  onDown,
+  label,
+}) => {
   const appCtx = useContext(AppContext);
 
   const { active } = appCtx.state;
 
   return (
-    <div>
+    <div id={divId}>
       <span>
-        {label} : {value} mins (active?{active ? "Y" : "N"}).
+        {label} {value}
       </span>
-      <button onClick={onUp} disabled={active}>
-        UP
+      <button id={upId} onClick={onUp} disabled={active}>
+        Up
       </button>
-      <button onClick={onDown} disabled={active}>
-        DOWN
+      <button id={downId} onClick={onDown} disabled={active}>
+        Down
       </button>
     </div>
   );

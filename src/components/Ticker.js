@@ -1,4 +1,4 @@
-import { useEffect, useRef, useContext } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 const Ticker = ({ onTick }) => {
@@ -10,7 +10,7 @@ const Ticker = ({ onTick }) => {
   // console.log("T ACTIVE", active);
 
   const timerRef = useRef();
-  console.log("timerRef + active", timerRef, active);
+  //console.log("timerRef + active", timerRef, active);
 
   const scheduleTick = () => {
     // console.log("scheduleTick being called ", { active });
@@ -35,7 +35,7 @@ const Ticker = ({ onTick }) => {
       } finally {
         scheduleTick();
       }
-    }, 100);
+    }, 300);
   };
 
   useEffect(() => {
@@ -52,7 +52,8 @@ const Ticker = ({ onTick }) => {
   }, [state]);
   */
 
-  return <p>Hello From Ticker active : {active ? "ACTIVE" : "NOT-ACTIVE"}</p>;
+  //return <p>Hello From Ticker active : {active ? "ACTIVE" : "NOT-ACTIVE"}</p>;
+  return <React.Fragment>&nbsp;</React.Fragment>;
 };
 
 export default Ticker;

@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, useMemo } from "react";
 
-const SESSION_DEFAULT = 2;
-const BREAK_DEFAULT = 1;
+const SESSION_DEFAULT = 25;
+const BREAK_DEFAULT = 5;
 
 const initialState = {
   active: false,
@@ -10,6 +10,7 @@ const initialState = {
   isPeriodSession: true,
   periodMins: SESSION_DEFAULT,
   periodSecs: 0,
+  flipped: false,
 };
 
 export const AppContext = createContext();
@@ -41,7 +42,10 @@ export function AppContextProvider(props) {
         setAppState((old) => {
           const orig = old.breakMins;
           const adjusted = orig + inc;
-          const newVal = adjusted <= 0 ? orig : adjusted;
+          let newVal = adjusted;
+          if (adjusted <= 0 || adjusted > 60) {
+            newVal = orig;
+          }
           //console.log("BREAK MINS", { old, newVal, inc });
           return {
             ...old,
@@ -51,17 +55,29 @@ export function AppContextProvider(props) {
           };
         });
       },
+      adjustSessionMins: (inc) => () => {
+        setAppState((old) => {
+          const orig = old.sessionMins;
+          const adjusted = orig + inc;
+          let newVal = adjusted;
+          if (adjusted <= 0 || adjusted > 60) {
+            newVal = orig;
+          }
+          return {
+            ...old,
+            sessionMins: newVal,
+            periodMins: old.isPeriodSession ? newVal : old.periodMins,
+            periodSecs: old.isPeriodSession ? 0 : old.periodSecs,
+          };
+        });
+      },
       countDown: () => {
         //console.log("countDown being called!" + new Date());
         setAppState((oldState) => {
           let newSeconds = oldState.periodSecs - 1;
           let newMinutes = oldState.periodMins;
-          if (newSeconds < 0) {
-            newSeconds = 59;
-            newMinutes = newMinutes - 1;
-          }
-          const flip = newMinutes === 0 && newSeconds === 0;
           let newPeriodIsSession = oldState.isPeriodSession;
+          const flip = newMinutes === 0 && newSeconds < 0;
           if (flip) {
             newSeconds = 0;
             if (oldState.isPeriodSession) {
@@ -73,7 +89,13 @@ export function AppContextProvider(props) {
               newMinutes = oldState.sessionMins;
               newPeriodIsSession = true;
             }
-          } //end if flip
+          } else {
+            if (newSeconds < 0) {
+              newSeconds = 59;
+              newMinutes = newMinutes - 1;
+            }
+          }
+          //end if flip
           //console.log("XXXX", { newPeriodIsSession, newMinutes, newSeconds });
 
           const updatedState = {
@@ -81,23 +103,11 @@ export function AppContextProvider(props) {
             isPeriodSession: newPeriodIsSession,
             periodMins: newMinutes,
             periodSecs: newSeconds,
+            flipped: flip,
           };
-          console.log({ oldState, updatedState });
+
+          console.log({ newMinutes, newSeconds });
           return updatedState;
-        });
-      },
-      adjustSessionMins: (inc) => () => {
-        setAppState((old) => {
-          const orig = old.sessionMins;
-          const adjusted = orig + inc;
-          const newVal = adjusted <= 0 ? orig : adjusted;
-          //console.log("SESSION MINS", { old, newVal, inc });
-          return {
-            ...old,
-            sessionMins: newVal,
-            periodMins: old.isPeriodSession ? newVal : old.periodMins,
-            periodSecs: old.isPeriodSession ? 0 : old.periodSecs,
-          };
         });
       },
     };
