@@ -11,6 +11,7 @@ const initialState = {
   periodMins: SESSION_DEFAULT,
   periodSecs: 0,
   flipped: false,
+  beeper: null,
 };
 
 export const AppContext = createContext();
@@ -27,6 +28,14 @@ export function AppContextProvider(props) {
   const wrapped = useMemo(() => {
     return {
       state: appState,
+      setBeeper: (onBeep) => {
+        setAppState((oldState) => {
+          return {
+            ...oldState,
+            beeper: onBeep,
+          };
+        });
+      },
       reset: () => {
         setAppState(initialState);
       },
@@ -97,7 +106,9 @@ export function AppContextProvider(props) {
           }
           //end if flip
           //console.log("XXXX", { newPeriodIsSession, newMinutes, newSeconds });
-
+          if (oldState.beeper) {
+            oldState.beeper();
+          }
           const updatedState = {
             ...oldState,
             isPeriodSession: newPeriodIsSession,

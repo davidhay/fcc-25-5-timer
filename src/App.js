@@ -3,7 +3,7 @@ import Ticker from "./components/Ticker";
 import PeriodAdjuster from "./components/PeriodAdjuster";
 import Counter from "./components/Counter";
 import { useEffect, useContext, useCallback } from "react";
-import { AppContext } from "./context/AppContext";
+//import { AppContext } from "./context/AppContext";
 
 const App = (props) => {
   const context = useContext(AppContext);
@@ -17,10 +17,6 @@ const App = (props) => {
     periodSecs,
     flipped,
   } = state;
-
-  //  console.log("CONTEXT", context);
-  //  console.log("STATE", state);
-  //  console.log("ACTIVE", active);
 
   const { reset, toggleActive, countDown, adjustBreakMins, adjustSessionMins } =
     context;
@@ -58,12 +54,6 @@ const App = (props) => {
     [adjustSessionMins]
   );
 
-  /*
-  useEffect(() => {
-    console.log("active now [" + active + "]");
-  }, [active]);
-  */
-
   const resetAudio = () => {
     const beep = document.getElementById("beep");
     beep.pause();
@@ -86,7 +76,6 @@ const App = (props) => {
       <button onClick={playBeep}>BEEPP</button>
       <audio id="beep" controls style={{ display: "none" }}>
         <source
-          //src="./Tada-sound.mp3"
           src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
           type="audio/wav"
         />
@@ -99,12 +88,9 @@ const App = (props) => {
       <button id="reset" onClick={resetStopped}>
         Reset
       </button>
-      {/*
-        <div>Session Mins {sessionMins}</div>
-        <div>Break Mins {breakMins}</div>
-        */}
       <PeriodAdjuster
-        divId="session-label"
+        labelId="session-label"
+        valueId="session-value"
         upId="session-increment"
         downId="session-decrement"
         value={sessionMins}
@@ -113,7 +99,8 @@ const App = (props) => {
         onDown={onChangeSessionMins(-1)}
       />
       <PeriodAdjuster
-        divId="break-label"
+        labelId="break-label"
+        valueId="break-value"
         upId="break-increment"
         downId="break-decrement"
         value={breakMins}
