@@ -10,7 +10,7 @@ const Counter = ({ counterId, label, mins, secs, timeLabel }) => {
       <div id={counterId} style={{ border: "1px solid black" }}>
         <div>{label}</div>
         <div id={timeLabel}>
-          {withLeadingZeros(mins)}:{withLeadingZeros(secs)}
+          {withLeadingZeros(mins) + ":" + withLeadingZeros(secs)}
         </div>
       </div>
     </React.Fragment>

@@ -35,7 +35,7 @@ const Ticker = ({ onTick }) => {
       } finally {
         scheduleTick();
       }
-    }, 300);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -47,10 +47,10 @@ const Ticker = ({ onTick }) => {
   }, [active]);
 
   /*
-  useEffect(() => {
-    console.log("UPDATED STATE", state);
-  }, [state]);
-  */
+    useEffect(() => {
+      console.log("UPDATED STATE", state);
+    }, [state]);
+    */
 
   //return <p>Hello From Ticker active : {active ? "ACTIVE" : "NOT-ACTIVE"}</p>;
   return <React.Fragment>&nbsp;</React.Fragment>;

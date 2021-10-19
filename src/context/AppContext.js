@@ -10,32 +10,17 @@ const initialState = {
   isPeriodSession: true,
   periodMins: SESSION_DEFAULT,
   periodSecs: 0,
-  flipped: false,
-  beeper: null,
+  isZero: false,
 };
 
 export const AppContext = createContext();
 
-export function AppContextProvider(props) {
+const AppContextProvider = (props) => {
   const [appState, setAppState] = useState(initialState);
-
-  /*
-  useEffect(() => {
-    console.log("new state", { appState });
-  }, appState);
-  */
 
   const wrapped = useMemo(() => {
     return {
       state: appState,
-      setBeeper: (onBeep) => {
-        setAppState((oldState) => {
-          return {
-            ...oldState,
-            beeper: onBeep,
-          };
-        });
-      },
       reset: () => {
         setAppState(initialState);
       },
@@ -86,6 +71,7 @@ export function AppContextProvider(props) {
           let newSeconds = oldState.periodSecs - 1;
           let newMinutes = oldState.periodMins;
           let newPeriodIsSession = oldState.isPeriodSession;
+          const isZero = newMinutes === 0 && newSeconds === 0;
           const flip = newMinutes === 0 && newSeconds < 0;
           if (flip) {
             newSeconds = 0;
@@ -104,17 +90,13 @@ export function AppContextProvider(props) {
               newMinutes = newMinutes - 1;
             }
           }
-          //end if flip
-          //console.log("XXXX", { newPeriodIsSession, newMinutes, newSeconds });
-          if (oldState.beeper) {
-            oldState.beeper();
-          }
+
           const updatedState = {
             ...oldState,
             isPeriodSession: newPeriodIsSession,
             periodMins: newMinutes,
             periodSecs: newSeconds,
-            flipped: flip,
+            isZero: isZero,
           };
 
           console.log({ newMinutes, newSeconds });
@@ -127,4 +109,6 @@ export function AppContextProvider(props) {
   return (
     <AppContext.Provider value={wrapped}>{props.children}</AppContext.Provider>
   );
-}
+};
+
+export default AppContextProvider;

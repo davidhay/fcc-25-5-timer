@@ -3,7 +3,7 @@ import Ticker from "./components/Ticker";
 import PeriodAdjuster from "./components/PeriodAdjuster";
 import Counter from "./components/Counter";
 import { useEffect, useContext, useCallback } from "react";
-//import { AppContext } from "./context/AppContext";
+import { AppContext } from "./context/AppContext";
 
 const App = (props) => {
   const context = useContext(AppContext);
@@ -15,7 +15,7 @@ const App = (props) => {
     isPeriodSession,
     periodMins,
     periodSecs,
-    flipped,
+    isZero,
   } = state;
 
   const { reset, toggleActive, countDown, adjustBreakMins, adjustSessionMins } =
@@ -54,6 +54,12 @@ const App = (props) => {
     [adjustSessionMins]
   );
 
+  /*
+  useEffect(() => {
+    console.log("active now [" + active + "]");
+  }, [active]);
+  */
+
   const resetAudio = () => {
     const beep = document.getElementById("beep");
     beep.pause();
@@ -66,16 +72,17 @@ const App = (props) => {
   };
 
   useEffect(() => {
-    if (flipped) {
+    if (isZero) {
       playBeep();
     }
-  }, [flipped]);
+  }, [isZero]);
 
   return (
     <div>
       <button onClick={playBeep}>BEEPP</button>
       <audio id="beep" controls style={{ display: "none" }}>
         <source
+          //src="./Tada-sound.mp3"
           src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
           type="audio/wav"
         />
@@ -90,7 +97,7 @@ const App = (props) => {
       </button>
       <PeriodAdjuster
         labelId="session-label"
-        valueId="session-value"
+        valueId="session-length"
         upId="session-increment"
         downId="session-decrement"
         value={sessionMins}
@@ -100,7 +107,7 @@ const App = (props) => {
       />
       <PeriodAdjuster
         labelId="break-label"
-        valueId="break-value"
+        valueId="break-length"
         upId="break-increment"
         downId="break-decrement"
         value={breakMins}
@@ -110,7 +117,7 @@ const App = (props) => {
       />
       <Counter
         counterId="timer-label"
-        timeLabel="timer-left"
+        timeLabel="time-left"
         label={isPeriodSession ? "Session" : "Break"}
         mins={periodMins}
         secs={periodSecs}
